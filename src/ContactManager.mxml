@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:views="com.javierjulio.contactmanager.views.*" 
+	xmlns:config="com.javierjulio.contactmanager.config.*" 
+	xmlns:components="com.javierjulio.components.*"
+	xmlns:mxml="org.swizframework.core.mxml.*" 
+	xmlns:core="org.swizframework.core.*" 
+	height="100%" width="100%" 
+	applicationComplete="applicationCompleteHandler();" >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.javierjulio.contactmanager.events.ContactEvent;
+			import com.javierjulio.contactmanager.models.ContactModel;
+			
+			import mx.controls.ProgressBar;
+			
+			[Bindable]
+			[Inject]
+			public var contactModel:ContactModel;
+			
+			[SkinPart(required="false", type="mx.core.IVisualElement")]
+			/**
+			 * A skin part that defines the progress bar in the application status bar.
+			 * 
+			 * @default null
+			 */
+			public var statusProgressBar:ProgressBar;
+			
+			[EventHandler("SearchEvent.SEARCH")]
+			[EventHandler("ContactEvent.LOADED", properties="showProgress")]
+			/**
+			 * Displays the indeterminate status progress bar.
+			 * 
+			 * @param show If <code>true</code> displays the progress bar.
+			 */
+			public function indicateProgess(show:Boolean=true):void 
+			{
+				statusProgressBar.visible = show;
+			}
+			
+			/**
+			 * On application complete we perform start up and center the 
+			 * main app window.
+			 */
+			protected function applicationCompleteHandler():void 
+			{
+				// center the main application window
+				var screenBounds:Rectangle = Screen.mainScreen.bounds;
+				nativeWindow.x = (screenBounds.width - nativeWindow.width) / 2;
+				nativeWindow.y = (screenBounds.height - nativeWindow.height) / 2;
+				
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, stage_keyDownHandler);
+			}
+			
+			/**
+			 * When the hits the CMD + T keyboard shortcut (CTRL for Windows) we send 
+			 * a dispatch an event of type ContactEvent.OPEN_EDITOR to add a new contact 
+			 * profile tab so the user can create a new contact.
+			 * 
+			 * @param event The KeyboardEvent object.
+			 */
+			protected function stage_keyDownHandler(event:KeyboardEvent):void 
+			{
+				if (event.keyCode == Keyboard.T && event.ctrlKey) 
+					dispatchEvent(new ContactEvent(ContactEvent.OPEN_EDITOR));
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Style source="/styles.css" />
+	
+	<fx:Declarations>
+		
+		<mxml:Swiz id="appSwiz">
+			<mxml:config>
+				<core:SwizConfig id="appSwizConfig" strict="true" 
+					eventPackages="com.javierjulio.contactmanager.events" 
+					viewPackages="com.javierjulio.contactmanager.views" />
+			</mxml:config>
+			<mxml:beanProviders>
+				<config:Beans />
+			</mxml:beanProviders>
+		</mxml:Swiz>
+		
+		<s:TraceTarget filters="com.javierjulio.contactmanager.*" 
+			includeCategory="true" includeLevel="true" includeTime="true" />
+		
+	</fx:Declarations>
+	
+	<views:AppControlBar id="appControlBar" width="100%" />
+	
+	<components:SuperTabBar dataProvider="{contactProfileStack}" requireSelection="true" 
+							top="55" left="8" right="330" height="30" />
+	
+	<views:ContactProfileStack id="contactProfileStack" top="85" bottom="8" left="8" right="330" />
+	
+	<views:ContactList id="contactList" contacts="{contactModel.contacts}" 
+					   top="70" bottom="8" right="8" height="100%" width="300" />
+	
+</s:WindowedApplication>

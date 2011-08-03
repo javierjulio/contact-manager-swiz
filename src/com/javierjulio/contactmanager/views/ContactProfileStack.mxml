@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ViewStack xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Metadata>
+		[Event(name="delete", type="com.javierjulio.contactmanager.events.ContactEvent")]
+		[Event(name="save", type="com.javierjulio.contactmanager.events.ContactEvent")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.javierjulio.contactmanager.events.SearchEvent;
+			import com.javierjulio.contactmanager.models.ContactVO;
+			
+			import mx.core.INavigatorContent;
+			
+			/**
+			 * Removes a ContactProfile view by its associated contact object.
+			 * 
+			 * @param contact The contact object.
+			 */
+			public function removeContactProfile(contact:ContactVO):void 
+			{
+				var profile:ContactProfile = getContactProfile(contact);
+				
+				// if a contact is deleted somewhere in the app, 
+				// we remove the corresponding view
+				if (profile) 
+				{
+					removeItemAt(getChildIndex(profile));
+				}
+			}
+			
+			/**
+			 * Creates a ContactProfile with the provided contact object and 
+			 * adds the component as a child to this ViewStack.
+			 * 
+			 * @param contact The contact object.
+			 * 
+			 * @return the newly added ContactProfile instance
+			 */
+			public function addContactProfile(contact:ContactVO):ContactProfile 
+			{
+				var profile:ContactProfile = new ContactProfile();
+				profile.contact = contact;
+				
+				addItem(profile);
+				
+				return profile;
+			}
+			
+			[EventHandler("ContactEvent.REMOVED", properties="contact")]
+			/**
+			 * 
+			 */
+			public function contactRemoved(contact:ContactVO):void 
+			{
+				removeContactProfile(contact);
+				
+				// since a contact has been deleted we need to update 
+				// the list with a new set of results
+				dispatchEvent(new SearchEvent(SearchEvent.SEARCH));
+			}
+			
+			[EventHandler("ContactEvent.SAVED", properties="contact")]
+			/**
+			 * 
+			 */
+			public function contactSaved(contact:ContactVO):void 
+			{
+				var tab:ContactProfile = getContactProfile(contact);
+				
+				if (tab) 
+				{
+					tab.saved();
+				}
+				
+				// since a contact has been saved we need to update the list 
+				// with a new set of results because for example a name 
+				// could have been changed
+				dispatchEvent(new SearchEvent(SearchEvent.SEARCH));
+			}
+			
+			/**
+			 * Returns the ContactProfile view used to edit the specified 
+			 * contact. Returns null if the provided contact object is not 
+			 * currently being viewed in the stack.
+			 * 
+			 * @param contact The contact object.
+			 * 
+			 * @return the ContactProfile determined by the provided contact
+			 */
+			public function getContactProfile(contact:ContactVO):ContactProfile 
+			{
+				// since we retrieve a ContactProfile by contact id, if its 
+				// not a valid id, don't bother performing a search
+				if (contact.id == 0) 
+					return null;
+				
+				// retrieve all tabs so we can find the one we want
+				var children:Array = getChildren();
+				
+				for (var i:int = 0; i < children.length; i++) 
+				{
+					if (children[i] is ContactProfile 
+						&& ContactProfile(children[i]).contact 
+						&& ContactProfile(children[i]).contact.id == contact.id) 
+					{
+						return children[i];
+					}
+				}
+				
+				return null;
+			}
+			
+			[EventHandler("ContactEvent.EDIT", properties="contact")]
+			[EventHandler("ContactEvent.OPEN_EDITOR", properties="contact")]
+			/**
+			 * 
+			 */
+			public function openContactProfile(contact:ContactVO=null):ContactProfile 
+			{
+				// if no body is provided then the user wishes to 
+				// create a new contact, so we need a blank object
+				if (contact == null) 
+					contact = new ContactVO();
+				
+				// retrieve tab by its associated contact object and if 
+				// its defined user wants to edit that existing contact 
+				// otherwise we just created a blank one earlier 
+				// since the user wants to create a new contact
+				var tab:ContactProfile = getContactProfile(contact);
+				selectedChild = (tab == null) 
+					? INavigatorContent(addContactProfile(contact)) 
+					: INavigatorContent(tab);
+				
+				return tab;
+			}
+			
+			/**
+			 * @private
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void 
+			{
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+				
+				var g:Graphics = graphics;
+				g.clear();
+				// border
+				g.beginFill(0x696969);
+				g.drawRect(0, 0, unscaledWidth, unscaledHeight);
+				g.endFill();
+				// content background
+				g.beginFill(0xffffff);
+				g.drawRect(1, 0, unscaledWidth-2, unscaledHeight-1);
+				g.endFill();
+			}
+		]]>
+	</fx:Script>
+	
+</mx:ViewStack>

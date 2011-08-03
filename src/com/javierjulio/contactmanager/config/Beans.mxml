@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<swizCore:BeanProvider xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:swizCore="org.swizframework.core.*" 
+	xmlns:controllers="com.javierjulio.contactmanager.controllers.*" 
+	xmlns:delegates="com.javierjulio.contactmanager.delegates.*" 
+	xmlns:models="com.javierjulio.contactmanager.models.*">
+	
+	<models:ContactModel id="contactModel" />
+	
+	<delegates:MockContactDelegate id="contactDelegate" />
+	
+	<controllers:ContactController id="contactController" />
+	
+</swizCore:BeanProvider>
