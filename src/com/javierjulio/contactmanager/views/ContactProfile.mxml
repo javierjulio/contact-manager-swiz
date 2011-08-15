@@ -19,11 +19,6 @@
 			import com.javierjulio.contactmanager.events.ContactEvent;
 			import com.javierjulio.contactmanager.models.ContactVO;
 			
-			/**
-			 * @private
-			 */
-			private var statusTimer:Timer;
-			
 			[Bindable]
 			public var contact:ContactVO;
 			
@@ -40,17 +35,7 @@
 				saveAction.enabled = true;
 				saveAction.label = "Save";
 				
-				if (!statusTimer) 
-				{
-					statusTimer = new Timer(3500);
-				}
-				
-				if (!statusTimer.hasEventListener(TimerEvent.TIMER)) 
-				{
-					statusTimer.addEventListener(TimerEvent.TIMER, statusTimerHandler);
-				}
-				
-				statusTimer.start();
+				statusFadeOut.play();
 			}
 			
 			/**
@@ -80,22 +65,12 @@
 			{
 				dispatchEvent(new ContactEvent(ContactEvent.DELETE, contact, null));
 			}
-			
-			/**
-			 * @private
-			 */
-			private function statusTimerHandler(event:TimerEvent):void 
-			{
-				statusTimer.removeEventListener(TimerEvent.TIMER, statusTimerHandler);
-				statusTimer.stop();
-				statusFadeOut.play();
-			}
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
 		
-		<s:Fade id="statusFadeOut" alphaFrom="1" alphaTo="0" duration="600" target="{status}" />
+		<s:Fade id="statusFadeOut" alphaFrom="1" alphaTo="0" startDelay="3500" duration="600" target="{status}" />
 		
 	</fx:Declarations>
 	
