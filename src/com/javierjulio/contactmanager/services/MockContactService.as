@@ -1,5 +1,7 @@
 package com.javierjulio.contactmanager.services
 {
+	import com.javierjulio.contactmanager.models.ContactVO;
+	
 	import flash.desktop.NativeApplication;
 	import flash.events.Event;
 	import flash.filesystem.File;
@@ -15,40 +17,12 @@ package com.javierjulio.contactmanager.services
 	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectUtil;
 	
-	import com.javierjulio.contactmanager.models.ContactVO;
-	
 	import spark.components.WindowedApplication;
 	
 	use namespace mx_internal;
 	
 	public class MockContactService
 	{
-		/**
-		 * Storage for the contact XML template used when creating a new contact.
-		 */
-		protected var template:XML = <contact>
-										<id></id>
-										<firstName></firstName>
-										<lastName></lastName>
-										<title></title>
-										<phone></phone>
-										<email></email>
-										<address1></address1>
-										<address2></address2>
-										<city></city>
-										<state></state>
-										<zip></zip>
-										<department></department>
-									</contact>;
-		
-		/**
-		 * Storage for the XML that is read from the local document containing all 
-		 * the contact data. When changes are made this instance is updated.
-		 * 
-		 * @default null
-		 */
-		protected var xmlDocument:XML;
-		
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
@@ -83,6 +57,38 @@ package com.javierjulio.contactmanager.services
 			// memory to the actual XML file 
 			WindowedApplication(FlexGlobals.topLevelApplication).addEventListener(Event.CLOSING, application_closingHandler);
 		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Variables
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Storage for the contact XML template used when creating a new contact.
+		 */
+		protected var template:XML = <contact>
+										<id></id>
+										<firstName></firstName>
+										<lastName></lastName>
+										<title></title>
+										<phone></phone>
+										<email></email>
+										<address1></address1>
+										<address2></address2>
+										<city></city>
+										<state></state>
+										<zip></zip>
+										<department></department>
+									</contact>;
+		
+		/**
+		 * Storage for the XML that is read from the local document containing all 
+		 * the contact data. When changes are made this instance is updated.
+		 * 
+		 * @default null
+		 */
+		protected var xmlDocument:XML;
 		
 		//--------------------------------------------------------------------------
 		//
