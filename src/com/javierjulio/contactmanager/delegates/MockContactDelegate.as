@@ -1,12 +1,11 @@
 package com.javierjulio.contactmanager.delegates
 {
-	import mx.collections.ArrayCollection;
-	import mx.logging.ILogger;
-	import mx.logging.Log;
-	import mx.rpc.AsyncToken;
-	
 	import com.javierjulio.contactmanager.models.ContactVO;
 	import com.javierjulio.contactmanager.services.MockContactService;
+	import com.javierjulio.utils.LogUtil;
+	
+	import mx.logging.ILogger;
+	import mx.rpc.AsyncToken;
 	
 	public class MockContactDelegate
 	{
@@ -20,7 +19,7 @@ package com.javierjulio.contactmanager.delegates
 		 * @private
 		 * Storage for the logger instance.
 		 */
-		private static const LOGGER:ILogger = Log.getLogger("com.javierjulio.contactmanager.delegates.MockContactDelegate");
+		private static const LOGGER:ILogger = LogUtil.getLogger(MockContactDelegate);
 		
 		//--------------------------------------------------------------------------
 		//

@@ -1,11 +1,12 @@
 package com.javierjulio.contactmanager.models
 {
+	import com.javierjulio.contactmanager.enum.DepartmentEnum;
+	import com.javierjulio.contactmanager.enum.IEnum;
+	import com.javierjulio.utils.LogUtil;
+	
 	import mx.collections.ArrayCollection;
 	import mx.logging.ILogger;
 	import mx.logging.Log;
-	
-	import com.javierjulio.contactmanager.enum.DepartmentEnum;
-	import com.javierjulio.contactmanager.enum.IEnum;
 
 	public class ContactModel
 	{
@@ -19,7 +20,7 @@ package com.javierjulio.contactmanager.models
 		 * @private
 		 * Storage for the logger instance.
 		 */
-		private static const LOGGER:ILogger = Log.getLogger("com.javierjulio.contactmanager.models.ContactModel");
+		private static const LOGGER:ILogger = LogUtil.getLogger(ContactModel);
 		
 		//--------------------------------------------------------------------------
 		//

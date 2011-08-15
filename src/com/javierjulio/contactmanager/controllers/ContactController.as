@@ -1,6 +1,11 @@
 package com.javierjulio.contactmanager.controllers
 {
-	import flash.events.IEventDispatcher;
+	import com.javierjulio.contactmanager.delegates.MockContactDelegate;
+	import com.javierjulio.contactmanager.enum.IEnum;
+	import com.javierjulio.contactmanager.events.ContactEvent;
+	import com.javierjulio.contactmanager.models.ContactModel;
+	import com.javierjulio.contactmanager.models.ContactVO;
+	import com.javierjulio.utils.LogUtil;
 	
 	import mx.collections.ArrayCollection;
 	import mx.logging.ILogger;
@@ -8,13 +13,6 @@ package com.javierjulio.contactmanager.controllers
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	
-	import com.javierjulio.contactmanager.delegates.MockContactDelegate;
-	import com.javierjulio.contactmanager.enum.DepartmentEnum;
-	import com.javierjulio.contactmanager.enum.IEnum;
-	import com.javierjulio.contactmanager.events.ContactEvent;
-	import com.javierjulio.contactmanager.events.SearchEvent;
-	import com.javierjulio.contactmanager.models.ContactModel;
-	import com.javierjulio.contactmanager.models.ContactVO;
 	import org.swizframework.controller.AbstractController;
 	
 	public class ContactController extends AbstractController
@@ -29,7 +27,7 @@ package com.javierjulio.contactmanager.controllers
 		 * @private
 		 * Storage for the logger instance.
 		 */
-		private static const LOGGER:ILogger = Log.getLogger("com.javierjulio.contactmanager.controller.ContactController");
+		private static const LOGGER:ILogger = LogUtil.getLogger(ContactController);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -164,7 +162,7 @@ package com.javierjulio.contactmanager.controllers
 					
 					filterContacts();
 					
-					_swiz.dispatcher.dispatchEvent(new ContactEvent(ContactEvent.LOADED));
+					dispatcher.dispatchEvent(new ContactEvent(ContactEvent.LOADED));
 					break;
 				
 				case "remove":
@@ -176,7 +174,7 @@ package com.javierjulio.contactmanager.controllers
 					// object pass it along anyway if it needs to be used, 
 					// for example, indicating through a message the name 
 					// of the contact that was removed successfully
-					_swiz.dispatcher.dispatchEvent(new ContactEvent(ContactEvent.REMOVED, contact));
+					dispatcher.dispatchEvent(new ContactEvent(ContactEvent.REMOVED, contact));
 					break;
 				
 				case "save":
@@ -197,7 +195,7 @@ package com.javierjulio.contactmanager.controllers
 					// object pass it along anyway if it needs to be used, 
 					// for example, indicating through a message the name 
 					// of the contact that was saved successfully
-					_swiz.dispatcher.dispatchEvent(new ContactEvent(ContactEvent.SAVED, contact));
+					dispatcher.dispatchEvent(new ContactEvent(ContactEvent.SAVED, contact));
 					break;
 				
 			}
